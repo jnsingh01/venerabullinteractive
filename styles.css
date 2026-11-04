@@ -1,0 +1,830 @@
+/* Venerabull Interactive.
+   One system (warm black, cream, bronze light, a serif for editorial display), with each app in its own register:
+   Forever's white space and night, and Red Button's ruby on black in a rounded sans. Motion lives in the light and
+   in the transitions between worlds; text never moves on its own. */
+
+:root {
+  --g: 11, 10, 9;                 /* the current ground, set by the stage script as "r, g, b" */
+  --ground: rgb(var(--g));
+  --ink: #f4f0e7;                 /* Venerabull cream */
+  --ink-2: #d4cbbb;
+  --ink-3: #a99e8b;
+  --bronze: #8e7557;
+  --bronze-l: #c9a97f;
+  --hair: rgba(244, 240, 231, 0.16);
+  --hair-2: rgba(244, 240, 231, 0.28);
+  --focus: #f2d3a2;
+
+  --serif: ui-serif, "New York", "Iowan Old Style", "Apple Garamond", Baskerville, Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
+  --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, "Helvetica Neue", Arial, sans-serif;
+
+  --gutter: max(16px, env(safe-area-inset-left), 5.5vw);
+  --mast-h: 64px;
+  --col: 35rem;
+  --scrim: 0.5;
+
+  color-scheme: dark;
+  /* The page's own ground follows the current world. Wherever the light's canvas doesn't reach (under a phone
+     browser's floating toolbar, and past either end of the page) the ground is the world's, never a fixed black. */
+  background: rgb(var(--g));
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html { scroll-behavior: smooth; }
+html.still { scroll-behavior: auto; }
+/* A control brought into view by the keyboard stops clear of the fixed masthead. */
+a, button { scroll-margin-top: calc(var(--mast-h) + env(safe-area-inset-top) + 12px); scroll-margin-bottom: 12px; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: rgb(var(--g));
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+p { margin: 0; }
+h1, h2, h3 { margin: 0; font-weight: 400; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: #0b0a09;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+  transform: translateY(-160%);
+}
+.skip:focus, .skip:focus-visible { transform: none; outline-color: #0b0a09; }
+
+/* ---------- The stage: the canvas and its scrim are fixed behind the content. ---------- */
+
+/* The canvas draws its own opaque ground, so it carries no background colour of its own: Mobile Safari reads a fixed
+   element's background colour where it meets the bottom of the window, then paints its toolbar's whole band in that
+   one colour and stops the page above it. Without one, the page runs on under the glass toolbar, in the ground of
+   the world in view (the root's background, above). */
+.stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--scrim);
+  /* The veil follows the text column: nearly solid to the column's right edge, then gone over the next quarter of
+     the window, so wherever the light reaches behind the text the text keeps its contrast. */
+  --col-end: calc(var(--gutter) + var(--col));
+  background: linear-gradient(90deg,
+    rgba(var(--g), 0.94) 0,
+    rgba(var(--g), 0.86) var(--col-end),
+    rgba(var(--g), 0.35) calc(var(--col-end) + 12vw),
+    rgba(var(--g), 0) calc(var(--col-end) + 24vw));
+}
+
+/* ---------- Masthead ---------- */
+
+.mast {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  height: var(--mast-h);
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 var(--gutter);
+  padding-top: env(safe-area-inset-top);
+  box-sizing: content-box;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+.mast.is-scrolled {
+  background: rgba(var(--g), 0.82);
+  -webkit-backdrop-filter: saturate(1.1) blur(18px);
+  backdrop-filter: saturate(1.1) blur(18px);
+  border-bottom-color: var(--hair);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  margin-right: auto;
+  min-height: 44px;
+}
+.brand__mark { width: 31px; height: auto; transition: opacity 0.25s ease; }
+.brand__name {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.nav__list { display: flex; gap: 4px; }
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: color 0.25s ease;
+}
+.nav__link[aria-current="true"] { color: var(--ink); }
+/* The current world's dot sits in the link's own right padding, so marking it never moves a link. */
+.nav__link[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  top: calc(50% - 2px);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--bronze-l);
+}
+
+.motion-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.motion-btn__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-2);
+  background: transparent;
+}
+.motion-btn[aria-pressed="true"] .motion-btn__dot { background: var(--bronze-l); border-color: var(--bronze-l); }
+
+.menu-btn {
+  display: none;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* ---------- Sections ---------- */
+
+main { position: relative; z-index: 2; }
+main:focus { outline: none; }
+
+.sec {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--mast-h) + 72px) var(--gutter) 96px;
+  scroll-margin-top: 0;
+}
+.sec--project { min-height: 135vh; min-height: 135svh; }
+.sec--world { min-height: 115vh; min-height: 115svh; }
+
+.sheet { width: 100%; max-width: var(--col); }
+.sheet--wide { max-width: 72rem; }
+
+.eyebrow, .problem, .endorse, .file__problem, .file__endorse {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bronze-l);
+}
+.eyebrow { margin-bottom: 22px; }
+
+.display {
+  font-family: var(--serif);
+  /* The headline is three phrases, each on its own line: "Software, made / for deeply / human problems." The
+     longest phrase is about 7.6em, about a third of the window at desktop widths. */
+  font-size: clamp(2.35rem, 4.6vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+/* Each phrase is a line where it fits. Every space in the headline is an ordinary one, so a phrase that doesn't
+   fit (a narrower window, or a wider typeface) wraps inside itself instead of running past its box. */
+.display__l { display: block; }
+
+.title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.world-title {
+  font-family: var(--serif);
+  font-size: clamp(3.1rem, 1.4rem + 7vw, 8.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-left: -0.04em;
+}
+/* Two phrases, two lines: "Made to be / touched", never a word left alone between them. */
+.world-title__l { display: block; }
+@media (min-width: 761px) { .world-title__l { white-space: nowrap; } }
+
+.lede {
+  margin-top: 26px;
+  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.3125rem);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 32em;
+  text-wrap: pretty;
+}
+.fact {
+  margin-top: 18px;
+  font-size: 0.9375rem;
+  color: var(--ink-3);
+  max-width: 34em;
+}
+.note {
+  margin-top: 30px;
+  font-size: 0.9375rem;
+  color: var(--ink-3);
+}
+
+.plate {
+  margin-top: 56px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  font-style: italic;
+  font-family: var(--serif);
+  text-wrap: pretty;
+}
+.plate__n {
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-right: 10px;
+  color: var(--ink-3);
+}
+
+/* Opening */
+.sec--opening { align-items: flex-end; padding-bottom: clamp(48px, 9vh, 112px); }
+.opening .eyebrow { margin-bottom: 26px; }
+/* Wide enough for the headline's longest phrase (about 35vw at 4.6vw), with room to spare. */
+.opening { max-width: min(56vw, 52rem); }
+.opening__works {
+  margin-top: 26px;
+  font-family: var(--serif);
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+  color: var(--ink-2);
+}
+.doors { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.door {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 48px;
+  padding: 13px 22px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+.door__k { font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.door__a { color: var(--bronze-l); }
+.sec--opening .plate { margin-top: 44px; }
+
+/* Studio triad */
+.triad { margin-top: 44px; border-top: 1px solid var(--hair); }
+.triad__item {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "k" "p" "s";
+  gap: 4px;
+  padding: 20px 0 22px;
+  border-bottom: 1px solid var(--hair);
+}
+.triad__k { grid-area: k; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bronze-l); }
+.triad__p {
+  grid-area: p;
+  justify-self: start;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  line-height: 1.2;
+  text-decoration: none;
+  background-image: linear-gradient(var(--hair-2), var(--hair-2));
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+  margin-top: 4px;
+}
+.triad__s { grid-area: s; color: var(--ink-2); font-size: 0.9375rem; margin-top: 4px; }
+
+/* Projects */
+.project .problem { margin-bottom: 18px; }
+.wm { line-height: 1; }
+.endorse { margin-top: 14px; letter-spacing: 0.14em; text-transform: none; font-weight: 500; font-size: 0.875rem; color: var(--ink-3); }
+
+.wm--forever {
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 1.4rem + 4.6vw, 5.5rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f6ece6;
+  margin-right: -0.22em;
+}
+.project--forever .problem { color: #d8c7d6; }
+.project--forever .endorse { color: #b9aab5; }
+
+/* Red Button's own type rules: a rounded sans, sentence case, no positive tracking. */
+.wm--red {
+  font-family: var(--rounded);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 1.4rem + 4.2vw, 5rem);
+  letter-spacing: -0.02em;
+  color: #f7eeee;
+}
+.project--red .problem { color: #f2707f; }
+.project--red .endorse { font-family: var(--rounded); letter-spacing: 0; color: #b8a5a7; font-size: 0.9375rem; }
+.pull {
+  margin-top: 30px;
+  font-family: var(--rounded);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.75rem);
+  line-height: 1.32;
+  color: #f7eeee;
+  max-width: 22em;
+}
+.project--red .lede { font-family: var(--rounded); }
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+.status__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--bronze-l);
+  background: transparent;
+}
+.status__sep { color: var(--ink-3); }
+
+.explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #14110e;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  width: fit-content;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+/* The arrow is drawn, not read: the link's name is "Explore Forever". */
+.explore::after { content: "→"; content: "→" / ""; font-weight: 400; }
+.project--red .explore { font-family: var(--rounded); background: #f7eeee; color: #1a0508; }
+
+/* Index: two rows, centred in their world like every other section, while the light rests. */
+.sec--index { align-items: center; }
+.rows { margin-top: 32px; border-top: 1px solid var(--hair); }
+.row__link {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.5fr) 1fr 1.2fr 1fr auto;
+  align-items: baseline;
+  gap: 24px;
+  padding: 26px 8px 26px 0;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+  transition: background-color 0.25s ease;
+}
+.row__name { font-family: var(--serif); font-size: clamp(1.4rem, 1.1rem + 0.9vw, 1.9rem); line-height: 1.15; }
+.row__cell { color: var(--ink-2); font-size: 0.9375rem; text-wrap: pretty; }
+.row__label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+.row__open { font-size: 0.875rem; color: var(--bronze-l); }
+.row__open::after { content: " →"; }
+
+/* Directions */
+.dirs { margin-top: 40px; border-top: 1px solid var(--hair); }
+.dirs li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  color: var(--ink-2);
+}
+
+/* Project files: visible without scripts; hidden when they open as dialogs. */
+.files { position: relative; padding: 96px var(--gutter); max-width: 60rem; }
+.files[hidden] { display: none; }
+.file { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--hair); }
+
+.file__head { margin-bottom: 22px; }
+.file__title { margin-top: 12px; }
+.file__endorse { margin-top: 12px; text-transform: none; letter-spacing: 0.08em; font-weight: 500; font-size: 0.875rem; }
+.file__lede { font-size: 1.1875rem; line-height: 1.55; max-width: 34em; }
+.facts { margin: 30px 0 0; border-top: 1px solid var(--hair); }
+.facts > div {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.facts dt { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); padding-top: 3px; }
+.facts dd { margin: 0; color: var(--ink-2); text-wrap: pretty; }
+
+/* ---------- The not-found page: the same ground and type, no light, nothing that moves ---------- */
+
+.page-lost .mast { position: absolute; }
+.sec--lost .doors { margin-top: 12px; }
+/* The way home sits with the two doors below it: the same height, text inset and gap as theirs. */
+.sec--lost .explore { margin-top: 36px; min-height: 0; padding: 13px 22px 12px; border: 1px solid transparent; }
+
+/* ---------- Footer ---------- */
+
+.foot { position: relative; z-index: 2; padding: 64px var(--gutter) calc(48px + env(safe-area-inset-bottom)); }
+.foot__inner { border-top: 1px solid var(--hair); padding-top: 36px; display: grid; gap: 24px; }
+.foot__brand { display: inline-flex; align-items: center; gap: 14px; text-decoration: none; min-height: 44px; width: fit-content; }
+.foot__brand img { width: 40px; transition: opacity 0.25s ease; }
+.foot__brand span { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.foot__nav { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.foot__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); font-size: 0.875rem; text-decoration: none; }
+.foot__note { font-size: 0.8125rem; color: var(--ink-3); max-width: 40em; }
+.foot__family { margin-top: 6px; }
+.foot__family a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hair); text-underline-offset: 3px; }
+
+/* ---------- The project dialog ---------- */
+
+.dlg {
+  width: min(960px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(88vh, 900px);
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  overflow: visible;
+}
+.dlg::backdrop { background: rgba(4, 3, 3, 0.8); }
+html.dlg-open { overflow: hidden; }
+
+.dlg__panel {
+  position: relative;
+  max-height: min(88vh, 900px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 22px;
+  padding: clamp(28px, 5vw, 64px);
+  background: #12100e;
+  border: 1px solid var(--hair);
+}
+.dlg[open] .dlg__panel { animation: dlg-in 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes dlg-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dlg__close {
+  position: absolute;
+  z-index: 2;
+  top: 16px; right: 16px;
+  color: var(--ink);
+  background: #12100e;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.dlg[data-brand="forever"] .dlg__close { color: #2a2420; background: #eeeeed; }
+.dlg[data-brand="forever"] .dlg__close:focus-visible { outline-color: #6b4d2e; }
+.dlg[data-brand="red"] .dlg__close { color: #f7eeee; background: #000; }
+
+/* More of the file below: for as long as the panel can still scroll, its foot fades into the panel's own colour and
+   carries the doors' downward arrow, drawn but not read. Where the cut falls between two lines, the arrow still
+   says there is more. */
+.dlg::after {
+  content: "↓";
+  content: "↓" / "";
+  position: absolute;
+  left: 1px; right: 1px; bottom: 1px;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+  border-radius: 0 0 21px 21px;
+  font-size: 0.9375rem;
+  line-height: 1;
+  color: var(--bronze-l);
+  background: linear-gradient(to bottom, rgba(18, 16, 14, 0) 0, rgba(18, 16, 14, 0.75) 55%, #12100e 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.dlg.has-more::after { opacity: 1; }
+/* It rises with the panel as the file opens. */
+.dlg[open]::after { animation: dlg-foot-in 0.32s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes dlg-foot-in {
+  from { transform: translateY(10px); }
+  to { transform: none; }
+}
+.dlg[data-brand="forever"]::after { color: #6b5f57; background: linear-gradient(to bottom, rgba(238, 238, 237, 0) 0, rgba(238, 238, 237, 0.75) 55%, #eeeeed 100%); }
+.dlg[data-brand="red"]::after { color: #f2707f; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.75) 55%, #000 100%); }
+
+.dlg__body .file__lede { margin-top: 4px; }
+.dlg__body .wm--forever, .dlg__body .wm--red { font-size: clamp(2.2rem, 1.4rem + 3.4vw, 4.25rem); }
+
+.dlg__nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 40px;
+}
+.dlg__step {
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  padding: 14px 18px;
+  text-align: left;
+  border: 1px solid rgba(244, 240, 231, 0.4);
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+}
+.dlg__step--next { grid-column: 2; text-align: right; }
+/* With two apps, Previous and Next would name the same file: only Next is shown. */
+.dlg__step[hidden] { display: none; }
+.dlg__step-k { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.75; }
+.dlg__step-v { font-family: var(--serif); font-size: 1.125rem; }
+
+/* Forever's own white space, with dark warm ink. */
+.dlg__panel[data-brand="forever"] { background: #eeeeed; color: #2a2420; border-color: transparent; }
+.dlg__panel[data-brand="forever"] .file__problem,
+.dlg__panel[data-brand="forever"] .facts dt { color: #6b5f57; }
+.dlg__panel[data-brand="forever"] .file__endorse { color: #5f554e; }
+.dlg__panel[data-brand="forever"] .wm--forever { color: #2a2420; }
+.dlg__panel[data-brand="forever"] .facts,
+.dlg__panel[data-brand="forever"] .facts > div { border-color: rgba(42, 36, 32, 0.16); }
+.dlg__panel[data-brand="forever"] .facts dd { color: #3b332e; }
+.dlg__panel[data-brand="forever"] :focus-visible { outline-color: #6b4d2e; }
+.dlg__panel[data-brand="forever"] .dlg__step { border-color: rgba(42, 36, 32, 0.55); }
+
+/* Red Button: ruby on pure black, rounded sans, sentence case. */
+.dlg__panel[data-brand="red"] { background: #000; color: #f7eeee; border-color: rgba(229, 48, 74, 0.28); font-family: var(--rounded); }
+.dlg__panel[data-brand="red"] .file__problem { color: #f2707f; }
+.dlg__panel[data-brand="red"] .file__endorse { font-family: var(--rounded); letter-spacing: 0; color: #b8a5a7; }
+.dlg__panel[data-brand="red"] .file__head::before {
+  content: "";
+  display: block;
+  width: 64px; height: 64px;
+  margin-bottom: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 196, 202, 0.75) 0 6%, rgba(255, 196, 202, 0) 22%),
+    radial-gradient(circle at 50% 78%, #ff6d7e 0%, #d42443 30%, #8f0d26 62%, #3d0410 100%);
+  box-shadow: 0 0 0 6px #000, 0 0 0 7px rgba(229, 48, 74, 0.55), 0 0 34px rgba(229, 48, 74, 0.35);
+}
+.dlg__panel[data-brand="red"] .facts dt { color: #b8a5a7; font-family: var(--sans); }
+.dlg__panel[data-brand="red"] .facts dd { color: #e6dada; }
+.dlg__panel[data-brand="red"] .dlg__step-v { font-family: var(--rounded); }
+
+/* ---------- Narrow screens: content sheets slide over the light. ---------- */
+
+@media (max-width: 1100px) {
+  :root { --col: 31rem; }
+}
+
+@media (max-width: 760px) {
+  :root { --mast-h: 56px; --gutter: max(16px, env(safe-area-inset-left)); }
+  body { font-size: 1rem; }
+
+  .mast { gap: 8px; }
+  .brand { gap: 9px; min-width: 0; }
+  .brand__mark { width: 28px; }
+  .brand__name { font-size: 0.6875rem; letter-spacing: 0.12em; white-space: nowrap; }
+  .menu-btn { display: inline-flex; align-items: center; padding: 0 12px; font-size: 0.8125rem; flex: none; }
+  .motion-btn { min-height: 44px; padding: 0 10px; gap: 6px; font-size: 0.75rem; flex: none; }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    padding: 8px var(--gutter) 20px;
+    background: rgb(var(--g));
+    border-bottom: 1px solid var(--hair);
+  }
+  .nav.is-open { display: block; }
+  .nav__list { flex-direction: column; gap: 0; }
+  .nav__link { width: 100%; min-height: 52px; padding: 0; font-size: 1.0625rem; border-bottom: 1px solid var(--hair); border-radius: 0; }
+  .nav__link[aria-current="true"]::after { position: static; margin-left: 8px; }
+  .mast.menu-open { background: rgb(var(--g)); }
+  /* Scrolled, the masthead is the world's own ground: Mobile Safari fills the status bar above the page with an opaque
+     masthead's colour, so the two read as one band in every world. */
+  .mast.is-scrolled { background: rgb(var(--g)); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+  .scrim { display: none; }
+
+  .sec {
+    align-items: flex-end;
+    padding: 0 0 56px;
+    min-height: 100svh;
+  }
+  .sec--project { min-height: 125svh; }
+  .sec--world { min-height: 110svh; }
+  .sec .sheet {
+    max-width: none;
+    padding: 72px var(--gutter) 0;
+    margin-top: 46svh;
+    background: linear-gradient(to bottom, rgba(var(--g), 0) 0, rgba(var(--g), 0.9) 64px, rgba(var(--g), 0.94) 100%);
+  }
+  .sec--opening .sheet { margin-top: 44svh; }
+  .opening { max-width: none; }
+  .sec--index { align-items: flex-start; }
+  .sec--index .sheet { margin-top: 0; padding-top: calc(var(--mast-h) + 48px); background: none; }
+  .sec--lost { align-items: center; }
+  .sec--lost .sheet { margin-top: 0; padding-top: calc(var(--mast-h) + 48px); background: none; }
+  .sec--lost .explore { width: 100%; justify-content: space-between; }
+
+  /* Where a link lands on a phone. On a 402 x 874 iPhone, Mobile Safari's window is 714 px tall, with 98 px of glass
+     toolbar over the page below it. Wherever a door or a header or footer link lands, every control and status line
+     either ends above the window's bottom or starts below the screen, so the toolbar never cuts through one. */
+  .sec--opening .sheet { padding-top: 64px; }
+  .opening .eyebrow { margin-bottom: 20px; }
+  .opening__works { margin-top: 20px; }
+  .opening .doors { margin-top: 26px; }
+  .sec .plate { margin-top: 120px; }
+  .sec--studio .triad { margin-top: 120px; }
+  .project .status { margin-top: 22px; }
+  .project .explore { margin-top: 24px; }
+  /* Forever's text is short enough to show whole beneath its light, Explore included; Red Button's is not, so its
+     status and Explore wait just below the first view. */
+  .project--forever .sheet {
+    margin-top: 35.5svh;
+    padding-top: 56px;
+    background: linear-gradient(to bottom, rgba(var(--g), 0) 0, rgba(var(--g), 0.9) 48px, rgba(var(--g), 0.94) 100%);
+  }
+  .project--red .sheet { margin-top: 56svh; }
+  .sec--index .note { margin-top: 24px; }
+
+  /* On a phone the headline is sized from its own box (container units, the box over 11.2), so its longest phrase,
+     about 7.6em, takes about two thirds of the measured width at every phone width; the vw line is the fallback. */
+  .opening { container-type: inline-size; }
+  .display {
+    font-size: clamp(1.6rem, calc((100vw - 32px) / 11.2), 2.9rem);
+    font-size: clamp(1.6rem, 100cqi / 11.2, 2.9rem);
+  }
+  .doors { flex-direction: column; align-items: stretch; }
+  .door { justify-content: flex-start; }
+  .door__a { margin-left: auto; }
+
+  .row__link { grid-template-columns: 1fr 1fr; gap: 12px 16px; padding: 22px 0; }
+  /* Open sits level with the app's name, at the right, as it ends a wider row. */
+  .row__name { grid-column: 1; grid-row: 1; }
+  .row__open { grid-column: 2; grid-row: 1; justify-self: end; }
+  .row__cell:nth-of-type(4) { grid-column: 1 / -1; }
+
+  .facts > div { grid-template-columns: 1fr; gap: 4px; }
+
+  /* With an app file open, Mobile Safari paints its toolbar's band in the colour it finds just above the window's
+     bottom edge; the file stops 24 px short of that edge, so the band is the dimmed page's colour, not the file's. */
+  .dlg { width: calc(100vw - 16px); max-height: calc(100svh - 48px); }
+  .dlg__panel { max-height: calc(100svh - 48px); padding: 28px 20px 24px; border-radius: 18px; }
+  .dlg::after { height: 56px; padding-bottom: 8px; border-radius: 0 0 17px 17px; }
+  .dlg__panel .file__head { padding-right: 48px; }
+  .dlg__nav { grid-template-columns: 1fr; }
+  .dlg__step--next { grid-column: auto; text-align: left; }
+  .files { padding: 64px var(--gutter); }
+}
+
+/* A tablet's index: the app's name on its own line, then the three facts and Open across the width. */
+@media (min-width: 761px) and (max-width: 1023px) {
+  .row__link { grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 12px 24px; }
+  .row__name { grid-column: 1 / -1; }
+}
+
+/* The name stands aside for the mark alone wherever it would crowd the controls beside it (on a phone, Menu and
+   Motion; on a tablet, the links and Motion). Screen readers still hear it. The not-found page's masthead holds only
+   the brand, so its name always shows. */
+@media (max-width: 407px), (min-width: 761px) and (max-width: 809px) {
+  body:not(.page-lost) .brand__name {
+    position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
+
+/* ---------- Hover where a pointer can hover (a tap leaves no tint behind); a press everywhere. ---------- */
+
+@media (hover: hover) {
+  .brand:hover .brand__mark, .foot__brand:hover img { opacity: 0.8; }
+  .nav__link:hover { color: var(--ink); }
+  .motion-btn:hover, .menu-btn:hover { color: var(--ink); border-color: rgba(244, 240, 231, 0.45); }
+  .door:hover { border-color: var(--bronze-l); background: rgba(201, 169, 127, 0.08); }
+  .triad__p:hover { background-image: linear-gradient(var(--bronze-l), var(--bronze-l)); }
+  .explore:hover { box-shadow: 0 0 0 4px rgba(244, 240, 231, 0.18); }
+  .project--red .explore:hover { box-shadow: 0 0 0 4px rgba(229, 48, 74, 0.35); }
+  .row__link:hover { background: rgba(244, 240, 231, 0.04); }
+  .foot__nav a:hover { color: var(--ink); }
+  .foot__family a:hover { color: var(--bronze-l); text-decoration-color: currentColor; }
+  .dlg__close:hover { background: #221e1a; }
+  .dlg[data-brand="forever"] .dlg__close:hover { background: #e2e2e0; }
+  .dlg[data-brand="red"] .dlg__close:hover { background: #1a0508; }
+  .dlg__panel .dlg__step:hover { border-color: currentColor; }
+}
+.door:active, .explore:active, .menu-btn:active, .motion-btn:active, .dlg__step:active, .dlg__close:active { transform: scale(0.98); }
+
+/* ---------- Still: reduced motion, or the visitor turned motion off. ---------- */
+
+html.still *, html.still *::before, html.still *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.moving) { scroll-behavior: auto; }
+  html:not(.moving) *, html:not(.moving) *::before, html:not(.moving) *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .stage, .scrim { display: none; }
+  .explore { border: 1px solid; }
+}

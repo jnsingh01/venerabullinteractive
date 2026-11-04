@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Software, made for deeply human problems. Forever and Red Button, in development.">
+<title>Venerabull Interactive</title>
+<link rel="canonical" href="https://venerabullinteractive.com/">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<script src="js/site.js" defer></script>
+<script src="js/stage.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<canvas id="stage" class="stage" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+
+<header class="mast" id="mast">
+  <a class="brand" href="#top">
+    <img class="brand__mark" src="assets/venerabull-mark-cream.png" alt="" width="31" height="25">
+    <span class="brand__name">Venerabull Interactive</span>
+  </a>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  <nav class="nav" id="primary-nav" aria-label="Primary">
+    <ul class="nav__list">
+      <li><a class="nav__link" href="#studio" data-nav="studio">Apps</a></li>
+      <li><a class="nav__link" href="#forever" data-nav="forever">Forever</a></li>
+      <li><a class="nav__link" href="#red-button" data-nav="red-button">Red Button</a></li>
+      <li><a class="nav__link" href="#index" data-nav="index">Index</a></li>
+    </ul>
+  </nav>
+  <button class="motion-btn" id="motion-btn" type="button" aria-pressed="true">
+    <span class="motion-btn__dot" aria-hidden="true"></span>Motion
+  </button>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <section class="sec sec--opening" id="top" data-stage="two" aria-labelledby="h-opening">
+    <div class="sheet opening">
+      <p class="eyebrow">Venerabull Interactive</p>
+      <h1 class="display" id="h-opening"><span class="display__l">Software, made</span> <span class="display__l">for deeply</span> <span class="display__l">human problems.</span></h1>
+      <p class="opening__works">Forever. Red Button.</p>
+      <nav class="doors" aria-label="Enter an app">
+        <a class="door" href="#forever"><span class="door__k">Enter</span><span class="door__v">Forever</span><span class="door__a" aria-hidden="true">↓</span></a>
+        <a class="door" href="#red-button"><span class="door__k">Enter</span><span class="door__v">Red Button</span><span class="door__a" aria-hidden="true">↓</span></a>
+      </nav>
+      <p class="plate"><span class="plate__n">Plate I</span> Two rings of light, passing through each other.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--studio" id="studio" data-stage="many" data-nav-section="studio" aria-labelledby="h-studio">
+    <div class="sheet">
+      <p class="eyebrow">The apps</p>
+      <h2 class="title" id="h-studio">Two human problems. Two&nbsp;apps.</h2>
+      <p class="lede">Each app begins with something people actually live through: the bond with an animal they love, and the moment before an impulse they might regret. Both sit where attachment, identity and behavior meet the technology that now runs through them.</p>
+      <ol class="triad" aria-label="Two human problems, two apps">
+        <li class="triad__item">
+          <span class="triad__k">Connection</span>
+          <a class="triad__p" href="#forever">Forever</a>
+          <span class="triad__s">Keeping the animals people love.</span>
+        </li>
+        <li class="triad__item">
+          <span class="triad__k">Agency</span>
+          <a class="triad__p" href="#red-button">Red Button</a>
+          <span class="triad__s">The moment before an impulse.</span>
+        </li>
+      </ol>
+      <p class="plate"><span class="plate__n">Plate II</span> Many lights, loosely joined.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--world sec--interactive" id="interactive" data-stage="touch" data-nav-section="studio" aria-labelledby="h-interactive">
+    <div class="sheet">
+      <p class="eyebrow">The craft</p>
+      <h2 class="world-title" id="h-interactive"><span class="world-title__l">Made to be</span> <span class="world-title__l">touched</span></h2>
+      <p class="lede">Software for the hardest moments of an ordinary life, built with the care of a physical object.</p>
+      <p class="fact">Two apps are in development. Games and AI experiences are directions for later, not projects yet.</p>
+      <p class="plate"><span class="plate__n">Plate III</span> A surface that answers touch.</p>
+    </div>
+  </section>
+
+  <article class="sec sec--project project project--forever" id="forever" data-stage="forever" data-nav-section="forever" aria-labelledby="h-forever">
+    <div class="sheet">
+      <p class="problem">Connection</p>
+      <h2 class="wm wm--forever" id="h-forever">Forever</h2>
+      <p class="endorse">a Venerabull Interactive&nbsp;product</p>
+      <p class="lede">A photograph keeps how a pet looks in one moment. Forever is being built to keep the pet: recreated from its owner’s own photos, recognizably that animal from every angle, and living on.</p>
+      <p class="status"><span class="status__dot" aria-hidden="true"></span>In development <span class="status__sep" aria-hidden="true">·</span> Not released</p>
+      <a class="explore" href="#work-forever" data-open="forever" aria-haspopup="dialog">Explore Forever</a>
+      <p class="plate"><span class="plate__n">Plate IV</span> Scattered photographs gathering into one resting form.</p>
+    </div>
+  </article>
+
+  <article class="sec sec--project project project--red" id="red-button" data-stage="red" data-nav-section="red-button" aria-labelledby="h-red">
+    <div class="sheet">
+      <p class="problem">Agency</p>
+      <h2 class="wm wm--red" id="h-red">Red Button</h2>
+      <p class="endorse">from Venerabull Interactive</p>
+      <p class="pull">When you’re about to do something you might regret, you press it.</p>
+      <p class="lede">Made for the moment before an impulse, when you aren’t quite thinking like yourself. It’s designed to ask less of you the less you have to give.</p>
+      <p class="status"><span class="status__dot" aria-hidden="true"></span>In development <span class="status__sep" aria-hidden="true">·</span> Not released</p>
+      <a class="explore" href="#work-red-button" data-open="red-button" aria-haspopup="dialog">Explore Red Button</a>
+      <p class="plate"><span class="plate__n">Plate V</span> Restless light, gathered into one calm dome.</p>
+    </div>
+  </article>
+
+  <section class="sec sec--index" id="index" data-stage="quiet" data-nav-section="index" aria-labelledby="h-index">
+    <div class="sheet sheet--wide">
+      <p class="eyebrow">Index</p>
+      <h2 class="title" id="h-index">Every app, and where it actually&nbsp;stands.</h2>
+      <ul class="rows" id="rows">
+        <li class="row">
+          <a class="row__link" href="#work-forever" data-open="forever" aria-haspopup="dialog">
+            <span class="row__name">Forever</span>
+            <span class="row__cell"><span class="row__label">Human problem</span>Connection</span>
+            <span class="row__cell"><span class="row__label">Made for</span>The animals people love</span>
+            <span class="row__cell"><span class="row__label">Status</span>In development</span>
+            <span class="row__open" aria-hidden="true">Open</span>
+          </a>
+        </li>
+        <li class="row">
+          <a class="row__link" href="#work-red-button" data-open="red-button" aria-haspopup="dialog">
+            <span class="row__name">Red Button</span>
+            <span class="row__cell"><span class="row__label">Human problem</span>Agency</span>
+            <span class="row__cell"><span class="row__label">Made for</span>The moment before an impulse</span>
+            <span class="row__cell"><span class="row__label">Status</span>In development</span>
+            <span class="row__open" aria-hidden="true">Open</span>
+          </a>
+        </li>
+      </ul>
+      <p class="note">Neither app has been released, and no release dates are set.</p>
+    </div>
+  </section>
+
+  <section class="sec sec--directions" id="directions" data-stage="mark" aria-labelledby="h-directions">
+    <div class="sheet">
+      <p class="eyebrow">What comes next</p>
+      <h2 class="title" id="h-directions">Directions, not announcements.</h2>
+      <p class="lede">An idea can begin as an app and become a game, or begin as a game and become an AI experience.</p>
+      <ul class="dirs">
+        <li>More apps</li>
+        <li>Games</li>
+        <li>AI experiences</li>
+      </ul>
+      <p class="note">None of these is an announced project.</p>
+      <p class="plate"><span class="plate__n">Plate VI</span> The mark, drawn in light.</p>
+    </div>
+  </section>
+
+  <section class="files" id="files" aria-labelledby="h-files">
+    <h2 class="title" id="h-files">App files</h2>
+
+    <article class="file" id="work-forever" data-project="forever" data-brand="forever" aria-labelledby="t-forever">
+      <header class="file__head">
+        <p class="file__problem">Connection</p>
+        <h3 class="file__title wm wm--forever" id="t-forever">Forever</h3>
+        <p class="file__endorse">a Venerabull Interactive&nbsp;product</p>
+      </header>
+      <p class="file__lede">People form some of their deepest attachments with animals, and a photograph can only keep one moment of them. Forever is being built to keep the animal itself.</p>
+      <dl class="facts">
+        <div><dt>The aim</dt><dd>To recreate a person’s own pet from their own photos: not a breed, not a likeness of a breed, but that animal, with its identity holding steady across every view, in movement and through later corrections.</dd></div>
+        <div><dt>Where it stands</dt><dd>In development. Current work is on likeness. Not released, and no release date&nbsp;is&nbsp;set.</dd></div>
+        <div><dt>Brand</dt><dd>Forever, a Venerabull Interactive product</dd></div>
+      </dl>
+    </article>
+
+    <article class="file" id="work-red-button" data-project="red-button" data-brand="red" aria-labelledby="t-red">
+      <header class="file__head">
+        <p class="file__problem">Agency</p>
+        <h3 class="file__title wm wm--red" id="t-red">Red Button</h3>
+        <p class="file__endorse">from Venerabull Interactive</p>
+      </header>
+      <p class="file__lede">When you’re about to do something you might regret, you press it.</p>
+      <dl class="facts">
+        <div><dt>The idea</dt><dd>One luminous button for the moment before an impulse, when you aren’t quite thinking like yourself. It’s designed to ask less of you the less you have to give: almost nothing to read, type or decide while it’s in use.</dd></div>
+        <div><dt>Where it stands</dt><dd>In development as a native app, being built for iPhone first. Not released, and no release date&nbsp;is&nbsp;set.</dd></div>
+        <div><dt>Brand</dt><dd>Red Button, from Venerabull Interactive</dd></div>
+      </dl>
+    </article>
+  </section>
+</main>
+
+<footer class="foot" data-stage-extend="mark">
+  <div class="foot__inner">
+    <a class="foot__brand" href="#top">
+      <img src="assets/venerabull-mark-cream.png" alt="" width="40" height="32">
+      <span>Venerabull Interactive</span>
+    </a>
+    <nav aria-label="Footer">
+      <ul class="foot__nav">
+        <li><a href="#studio">Apps</a></li>
+        <li><a href="#forever">Forever</a></li>
+        <li><a href="#red-button">Red Button</a></li>
+        <li><a href="#index">Index</a></li>
+        <li><a href="#directions">What comes next</a></li>
+      </ul>
+    </nav>
+    <p class="foot__note">Both apps shown here are in development, and neither has been released.</p>
+    <p class="foot__note foot__family">Films and series: <a href="https://venerabullstudios.com/">Venerabull Studios</a></p>
+  </div>
+</footer>
+
+<dialog class="dlg" id="project-dialog" aria-labelledby="dlg-title">
+  <button class="dlg__close" id="dlg-close" type="button" aria-label="Close app file">
+    <span aria-hidden="true">×</span>
+  </button>
+  <div class="dlg__panel" id="dlg-panel">
+    <div class="dlg__body" id="dlg-body"></div>
+    <nav class="dlg__nav" aria-label="More apps">
+      <button class="dlg__step" id="dlg-prev" type="button"><span class="dlg__step-k">Previous</span> <span class="dlg__step-v" id="dlg-prev-name"></span></button>
+      <button class="dlg__step dlg__step--next" id="dlg-next" type="button"><span class="dlg__step-k">Next</span> <span class="dlg__step-v" id="dlg-next-name"></span></button>
+    </nav>
+    <p class="visually-hidden" id="dlg-live" aria-live="polite"></p>
+  </div>
+</dialog>
+</body>
+</html>
